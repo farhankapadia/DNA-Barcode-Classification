@@ -24,5 +24,22 @@ print(inga.head())
 
 data= [algae, bats, cypra, dros, fish, fungi, inga]
 combined= pd.concat(data)
+combined.rename(columns={' Sequence':'Sequence'}, inplace=True)
+#removing whitespace
+combined['Properties']= combined['Properties'].apply(lambda x: x.strip())
+#removing garbage data(noise)
+combined= combined.loc[(combined['Properties']!='partial cds| |') & 
+                       (combined['Properties']!='complete cds| |')]
+#removing noise
+combined['Sequence']= combined['Sequence'].apply(lambda x: x.replace('-', ''))
+# =============================================================================
+# print(combined['Sequence'].value_counts())
+# print(combined['Properties'].describe())
+# print(combined['Sequence'].describe())
+# =============================================================================
 print(combined.head())
 print(combined.tail())
+print(combined.shape)
+print(combined.describe())
+print(combined.info())
+print(combined.columns)
