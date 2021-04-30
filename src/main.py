@@ -1,4 +1,5 @@
 import pandas as pd
+import re
 
 algae= pd.read_csv('../data/algae.csv')
 algae['Family']= 'Algae'
@@ -32,6 +33,8 @@ combined= combined.loc[(combined['Properties']!='partial cds| |') &
                        (combined['Properties']!='complete cds| |')]
 #removing noise
 combined['Sequence']= combined['Sequence'].apply(lambda x: x.replace('-', ''))
+combined= combined.reset_index()
+combined.drop('index', axis=1, inplace=True)
 # =============================================================================
 # print(combined['Sequence'].value_counts())
 # print(combined['Properties'].describe())
