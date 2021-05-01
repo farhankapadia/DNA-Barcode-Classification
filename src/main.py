@@ -45,6 +45,7 @@ combined.drop('index', axis=1, inplace=True)
 # print(combined['Sequence'].describe())
 # =============================================================================
 combined['Properties']= combined['Properties'].str.split('|').str[1]
+combined['Properties']= combined['Properties'].str.replace('_', ' ')
 combined.rename(columns={'Properties':'Species'}, inplace=True)
 #combined = combined.sample(frac=1).reset_index(drop=True) #shuffling the dataframe
 print(combined.head())
