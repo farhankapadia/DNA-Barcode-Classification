@@ -1,8 +1,12 @@
 import pandas as pd
 import re
 import numpy as np
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-from sklearn.preprocessing import OneHotEncoder
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
+import matplotlib.pyplot as plt
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
 
 algae= pd.read_csv('../data/algae.csv')
@@ -56,7 +60,6 @@ print(combined.info())
 print(combined.columns)
 
 #classifying only into species for now
-X= combined['Sequence']
 y= combined['Species']
 
 #label encoding the species name
@@ -72,13 +75,48 @@ def string_to_array(my_string):
     my_array = np.array(list(my_string))
     return my_array
 
-def one_hot_encoder(my_array):
-    label_encoder.fit(np.array(['a','c','g','t','z']))
-    integer_encoded = label_encoder.transform(my_array)
-    onehot_encoder = OneHotEncoder(sparse=False, dtype=int, n_values=5)
-    integer_encoded = integer_encoded.reshape(len(integer_encoded), 1)
-    onehot_encoded = onehot_encoder.fit_transform(integer_encoded)
-    onehot_encoded = np.delete(onehot_encoded, -1, 1)
-    return onehot_encoded
+# function to convert sequence strings into k-mer words, default size = 6 (hexamer words)
+def getKmers(sequence, size=6):
+    return [sequence[x:x+size].lower() for x in range(len(sequence) - size + 1)]
 
-label_X= X.copy()
+combined['Words'] = combined.apply(lambda x: getKmers(x['Sequence']), axis=1)
+combined = combined.drop('Sequence', axis=1)
+print(combined.head())
+
+combined_texts = list(combined['Words'])
+for item in range(len(combined_texts)):
+    combined_texts[item] = ' '.join(combined_texts[item])
+    
+#Creating the Bag of Words model using CountVectorizer()
+#This is equivalent to k-mer counting
+cv = CountVectorizer(ngram_range=(4,4))
+X = cv.fit_transform(combined_texts)
+#print(X)
+#Splitting the dataset into the training set and test set
+X_train, X_test, y_train, y_test = train_test_split(X, 
+                                                    y, 
+                                                    test_size = 0.2, 
+                                                    random_state=42)
+
+#Multinomial Naive Bayes Classifier
+classifier = MultinomialNB(alpha=0.1)
+classifier.fit(X_train, y_train)
+
+y_pred = classifier.predict(X_test)
+#print(y_pred)
+
+
+print("Confusion matrix\n")
+print(pd.crosstab(pd.Series(y_test, name='Actual'), pd.Series(y_pred, name='Predicted')))
+def get_metrics(y_test, y_predicted):
+    accuracy = accuracy_score(y_test, y_predicted)
+    precision = precision_score(y_test, y_predicted, average='weighted', labels=np.unique(y_pred))
+    recall = recall_score(y_test, y_predicted, average='weighted', labels=np.unique(y_pred))
+    f1 = f1_score(y_test, y_predicted, average='weighted', labels=np.unique(y_pred))
+    return accuracy, precision, recall, f1
+accuracy, precision, recall, f1 = get_metrics(y_test, y_pred)
+print("accuracy = %.3f \nprecision = %.3f \nrecall = %.3f \nf1 = %.3f" % (accuracy, precision, recall, f1))
+
+
+test= input("Enter a DNA sequence to be classified: ")
+
