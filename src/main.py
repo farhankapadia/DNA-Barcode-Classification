@@ -87,6 +87,10 @@ combined_texts = list(combined['Words'])
 for item in range(len(combined_texts)):
     combined_texts[item] = ' '.join(combined_texts[item])
     
+
+test_sequence= input("Enter a DNA sequence to be classified: ")
+test_species= input("Enter the true species of the sequence: ")
+test_sequence= getKmers(test_sequence)
 #Creating the Bag of Words model using CountVectorizer()
 #This is equivalent to k-mer counting
 cv = CountVectorizer(ngram_range=(4,4))
@@ -103,8 +107,8 @@ classifier = MultinomialNB(alpha=0.1)
 classifier.fit(X_train, y_train)
 
 y_pred = classifier.predict(X_test)
-#print(y_pred)
-
+print(y_pred)
+print(y_test)
 
 print("Confusion matrix\n")
 print(pd.crosstab(pd.Series(y_test, name='Actual'), pd.Series(y_pred, name='Predicted')))
@@ -116,7 +120,4 @@ def get_metrics(y_test, y_predicted):
     return accuracy, precision, recall, f1
 accuracy, precision, recall, f1 = get_metrics(y_test, y_pred)
 print("accuracy = %.3f \nprecision = %.3f \nrecall = %.3f \nf1 = %.3f" % (accuracy, precision, recall, f1))
-
-
-test= input("Enter a DNA sequence to be classified: ")
 
