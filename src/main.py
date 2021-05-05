@@ -16,10 +16,10 @@ bats= pd.read_csv('../data/bats.csv')
 bats['Family']= 'Bats'
 print(bats.head())
 cypra= pd.read_csv('../data/CypraeidaeTrain.csv')
-cypra['Family']= 'Cypraeidae'
+cypra['Family']= 'Sea Snail'
 print(cypra.head())
 dros= pd.read_csv('../data/Drosophila_train.csv')
-dros['Family']= 'Drosophila'
+dros['Family']= 'Fruit Flies'
 print(dros.head())
 fish= pd.read_csv('../data/fishes.csv')
 fish['Family']= 'Fish'
@@ -28,30 +28,55 @@ fungi= pd.read_csv('../data/fungi.csv')
 fungi['Family']= 'Fungi'
 print(fungi.head())
 inga= pd.read_csv('../data/IngaTrain.csv')
-inga['Family']= 'Inga'
+inga['Family']= 'Plants'
 print(inga.head())
+amph= pd.read_csv('../data/Amphibian_Train.csv')
+amph['Family']= 'Amphibians'
+print(amph.head())
+birds= pd.read_csv('../data/bird_Train.csv')
+birds['Family']= 'Birds'
+print(birds.head())
+butterfly= pd.read_csv('../data/butterfly_Train.csv')
+butterfly['Family']= 'Butterfly'
+print(butterfly.head())
+
+
+data1= [amph, birds, butterfly]
+data1= pd.concat(data1)
+data1['Properties']= data1['Properties'].str.split('unknownFamily').str[1]
+data1['Properties']= data1['Properties'].str.replace('_', ' ')
+data1['Properties']= data1['Properties'].apply(lambda x: x.strip())
+data1.rename(columns={' Sequence':'Sequence'}, inplace=True)
+data1['Sequence']= data1['Sequence'].apply(lambda x: x.replace('-', ''))
+data1= data1.reset_index()
+data1.drop('index', axis=1, inplace=True)
+
 
 data= [algae, bats, cypra, dros, fish, fungi, inga]
-combined= pd.concat(data)
-combined.rename(columns={' Sequence':'Sequence'}, inplace=True)
+data= pd.concat(data)
+data.rename(columns={' Sequence':'Sequence'}, inplace=True)
 #removing whitespace
-combined['Properties']= combined['Properties'].apply(lambda x: x.strip())
+data['Properties']= data['Properties'].apply(lambda x: x.strip())
 #removing garbage data(noise)
-combined= combined.loc[(combined['Properties']!='partial cds| |') & 
-                       (combined['Properties']!='complete cds| |')]
+data= data.loc[(data['Properties']!='partial cds| |') & 
+                       (data['Properties']!='complete cds| |')]
 #removing noise
-combined['Sequence']= combined['Sequence'].apply(lambda x: x.replace('-', ''))
+data['Sequence']= data['Sequence'].apply(lambda x: x.replace('-', ''))
+data= data.reset_index()
+data.drop('index', axis=1, inplace=True)
+# =============================================================================
+# print(data['Sequence'].value_counts())
+# print(data['Properties'].describe())
+# print(data['Sequence'].describe())
+# =============================================================================
+data['Properties']= data['Properties'].str.split('|').str[1]
+data['Properties']= data['Properties'].str.replace('_', ' ')
+combined= [data, data1]
+combined= pd.concat(combined)
 combined= combined.reset_index()
 combined.drop('index', axis=1, inplace=True)
-# =============================================================================
-# print(combined['Sequence'].value_counts())
-# print(combined['Properties'].describe())
-# print(combined['Sequence'].describe())
-# =============================================================================
-combined['Properties']= combined['Properties'].str.split('|').str[1]
-combined['Properties']= combined['Properties'].str.replace('_', ' ')
 combined.rename(columns={'Properties':'Species'}, inplace=True)
-#combined = combined.sample(frac=1).reset_index(drop=True) #shuffling the dataframe
+
 print(combined.head())
 print(combined.tail())
 print(combined.shape)
@@ -59,11 +84,10 @@ print(combined.describe())
 print(combined.info())
 print(combined.columns)
 
-#classifying only into species for now
+#classifying into species and family
 y= combined['Species']
 y1= combined['Family']
-#y= y.append(pd.Series(['Dummy']), ignore_index=True)
-#print(y.tail())
+
 # =============================================================================
 # #one hot encoding the sequence
 # def string_to_array(my_string):
@@ -93,16 +117,14 @@ for item in range(len(combined_texts)):
     
 #label encoding the species name
 label_y= y.copy()
-#label_y= label_y.append(pd.Series(['Dummy']), ignore_index=True)
-#label_y= label_y.reset_index()
 label_encoder= LabelEncoder()
 label_y= label_encoder.fit_transform(y)
-#print(label_y)
+
 #Creating the Bag of Words model using CountVectorizer()
 #This is equivalent to k-mer counting
 cv = CountVectorizer(ngram_range=(4,4))
 X = cv.fit_transform(combined_texts)
-#print(X)
+
 #Splitting the dataset into the training set and test set
 X_train, X_test, y_train, y_test = train_test_split(X, 
                                                     y, 
