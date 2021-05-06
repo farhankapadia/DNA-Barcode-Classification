@@ -6,6 +6,7 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn import svm
+from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
@@ -138,7 +139,22 @@ X1_train, X1_test, y1_train, y1_test = train_test_split(X,
                                                     random_state=42)
 
 #Multinomial Naive Bayes Classifier
-classifier = MultinomialNB(alpha=0.1)
+def MultiNB():
+    model= MultinomialNB(alpha=0.1)
+    return model
+
+#SVM Classifier
+def SVM():
+    model = svm.SVC(C=1.0, kernel='linear', degree=3, gamma='auto')
+    return model
+
+#Random Forest Classifier
+def RandomForest():
+    model= RandomForestClassifier()
+    return model
+
+
+classifier = RandomForest() #just change the method name to call a different model
 classifier.fit(X_train, y_train)
 
 y_pred = classifier.predict(X_test)
@@ -153,7 +169,7 @@ new_y1= classifier.predict(new_x1)
 print("The predicted family is: ", new_y1[0]) #"new_y1[0]" is the family name
 
 
-def metrics():
+def metrics(y_test, y_pred):
     print("Confusion matrix\n")
     print(pd.crosstab(pd.Series(y_test, name='Actual'), pd.Series(y_pred, name='Predicted')))
     def get_metrics(y_test, y_predicted):
@@ -164,6 +180,8 @@ def metrics():
         return accuracy, precision, recall, f1
     accuracy, precision, recall, f1 = get_metrics(y_test, y_pred)
     print("accuracy = %.3f \nprecision = %.3f \nrecall = %.3f \nf1 = %.3f" % (accuracy, precision, recall, f1))
+    
+metrics(y_test, y_pred)
 
 
 
