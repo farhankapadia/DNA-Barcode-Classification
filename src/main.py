@@ -154,7 +154,7 @@ def RandomForest():
     return model
 
 
-classifier = RandomForest() #just change the method name to call a different model
+classifier = MultiNB() #just change the method name to call a different model
 classifier.fit(X_train, y_train)
 
 y_pred = classifier.predict(X_test)
