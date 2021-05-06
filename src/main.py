@@ -159,6 +159,7 @@ classifier.fit(X_train, y_train)
 
 y_pred = classifier.predict(X_test)
 
+
 new_x= cv.transform([new_test_sequence])
 new_y= classifier.predict(new_x)
 print("The predicted species is: ", new_y[0]) #"new_y[0] is the variable that has the species name stored
@@ -168,7 +169,9 @@ new_x1= cv.transform([new_test_sequence])
 new_y1= classifier.predict(new_x1)
 print("The predicted family is: ", new_y1[0]) #"new_y1[0]" is the family name
 
+y1_pred= classifier.predict(X1_test)
 
+#metrics for species classification
 def metrics(y_test, y_pred):
     print("Confusion matrix\n")
     print(pd.crosstab(pd.Series(y_test, name='Actual'), pd.Series(y_pred, name='Predicted')))
@@ -179,9 +182,27 @@ def metrics(y_test, y_pred):
         f1 = f1_score(y_test, y_predicted, average='weighted', labels=np.unique(y_pred))
         return accuracy, precision, recall, f1
     accuracy, precision, recall, f1 = get_metrics(y_test, y_pred)
+    print("The metrics for species classification are: ")
     print("accuracy = %.3f \nprecision = %.3f \nrecall = %.3f \nf1 = %.3f" % (accuracy, precision, recall, f1))
     
+
+#metrics for family classification
+def metricsFamily(y_test, y_pred):
+    print("Confusion matrix\n")
+    print(pd.crosstab(pd.Series(y_test, name='Actual'), pd.Series(y_pred, name='Predicted')))
+    def get_metrics(y_test, y_predicted):
+        accuracy = accuracy_score(y_test, y_predicted)
+        precision = precision_score(y_test, y_predicted, average='weighted', labels=np.unique(y_pred))
+        recall = recall_score(y_test, y_predicted, average='weighted', labels=np.unique(y_pred))
+        f1 = f1_score(y_test, y_predicted, average='weighted', labels=np.unique(y_pred))
+        return accuracy, precision, recall, f1
+    accuracy, precision, recall, f1 = get_metrics(y_test, y_pred)
+    print("The metrics for family classification are: ")
+    print("accuracy = %.3f \nprecision = %.3f \nrecall = %.3f \nf1 = %.3f" % (accuracy, precision, recall, f1))
+
+
 metrics(y_test, y_pred)
+metricsFamily(y1_test, y1_pred)
 
 
 
