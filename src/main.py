@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
+from sklearn import svm
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
@@ -151,16 +152,18 @@ new_x1= cv.transform([new_test_sequence])
 new_y1= classifier.predict(new_x1)
 print("The predicted family is: ", new_y1[0]) #"new_y1[0]" is the family name
 
-print("Confusion matrix\n")
-print(pd.crosstab(pd.Series(y_test, name='Actual'), pd.Series(y_pred, name='Predicted')))
-def get_metrics(y_test, y_predicted):
-    accuracy = accuracy_score(y_test, y_predicted)
-    precision = precision_score(y_test, y_predicted, average='weighted', labels=np.unique(y_pred))
-    recall = recall_score(y_test, y_predicted, average='weighted', labels=np.unique(y_pred))
-    f1 = f1_score(y_test, y_predicted, average='weighted', labels=np.unique(y_pred))
-    return accuracy, precision, recall, f1
-accuracy, precision, recall, f1 = get_metrics(y_test, y_pred)
-print("accuracy = %.3f \nprecision = %.3f \nrecall = %.3f \nf1 = %.3f" % (accuracy, precision, recall, f1))
+
+def metrics():
+    print("Confusion matrix\n")
+    print(pd.crosstab(pd.Series(y_test, name='Actual'), pd.Series(y_pred, name='Predicted')))
+    def get_metrics(y_test, y_predicted):
+        accuracy = accuracy_score(y_test, y_predicted)
+        precision = precision_score(y_test, y_predicted, average='weighted', labels=np.unique(y_pred))
+        recall = recall_score(y_test, y_predicted, average='weighted', labels=np.unique(y_pred))
+        f1 = f1_score(y_test, y_predicted, average='weighted', labels=np.unique(y_pred))
+        return accuracy, precision, recall, f1
+    accuracy, precision, recall, f1 = get_metrics(y_test, y_pred)
+    print("accuracy = %.3f \nprecision = %.3f \nrecall = %.3f \nf1 = %.3f" % (accuracy, precision, recall, f1))
 
 
 
