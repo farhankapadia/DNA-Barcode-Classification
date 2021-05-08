@@ -9,6 +9,7 @@ from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from sklearn.model_selection import GridSearchCV
 
 
 algae= pd.read_csv('../data/algae.csv')
@@ -140,7 +141,7 @@ X1_train, X1_test, y1_train, y1_test = train_test_split(X,
 
 #Multinomial Naive Bayes Classifier
 def MultiNB():
-    model= MultinomialNB(alpha=0.1)
+    model= MultinomialNB(alpha=0.01)
     return model
 
 #SVM Classifier
@@ -155,7 +156,7 @@ def RandomForest():
 
 
 classifier = MultiNB() #just change the method name to call a different model
-classifier.fit(X_train, y_train)
+clf= classifier.fit(X_train, y_train)
 
 y_pred = classifier.predict(X_test)
 
@@ -201,8 +202,16 @@ def metricsFamily(y_test, y_pred):
     print("accuracy = %.3f \nprecision = %.3f \nrecall = %.3f \nf1 = %.3f" % (accuracy, precision, recall, f1))
 
 
+def getParams():
+    parameters= {'alpha' : [1e-1, 1e-2, 1e-3, 1e-4]}
+    gs_clf= GridSearchCV(clf, parameters)
+    gs_clf= gs_clf.fit(X_train, y_train)
+    print(gs_clf.best_score_)
+    print(gs_clf.best_params_)
+
 metrics(y_test, y_pred)
 metricsFamily(y1_test, y1_pred)
+getParams()
 
 
 
