@@ -29,6 +29,10 @@ dros['Family']= 'Fruit Flies'
 print(dros.head())
 fish= pd.read_csv('../data/fishes.csv')
 fish['Family']= 'Fish'
+fish= fish.reset_index()
+fish.drop('Properties', axis=1, inplace=True)
+fish.rename(columns={'index':'Properties'}, inplace=True)
+print(fish.columns)
 print(fish.head())
 fungi= pd.read_csv('../data/fungi.csv')
 fungi['Family']= 'Fungi'
@@ -61,11 +65,15 @@ data1.drop('index', axis=1, inplace=True)
 data= [algae, bats, cypra, dros, fish, fungi, inga]
 data= pd.concat(data)
 data.rename(columns={' Sequence':'Sequence'}, inplace=True)
+data['Properties']= data['Properties'].str.split('|').str[1]
+print(data.loc[data['Family']=='Fish'])
 #removing whitespace
 data['Properties']= data['Properties'].apply(lambda x: x.strip())
 #removing garbage data(noise)
+
 data= data.loc[(data['Properties']!='partial cds| |') & 
                        (data['Properties']!='complete cds| |')]
+
 #removing noise
 data['Sequence']= data['Sequence'].apply(lambda x: x.replace('-', ''))
 data= data.reset_index()
@@ -75,7 +83,6 @@ data.drop('index', axis=1, inplace=True)
 # print(data['Properties'].describe())
 # print(data['Sequence'].describe())
 # =============================================================================
-data['Properties']= data['Properties'].str.split('|').str[1]
 data['Properties']= data['Properties'].str.replace('_', ' ')
 combined= [data, data1]
 combined= pd.concat(combined)
@@ -270,10 +277,10 @@ chooseModel(MultiNB())
 callFuncs()
 
 
-#the below commented cell is not needed as we will only use 1 algo
-#for our project
-#this can be uncommented anytime to run all 4 algos and get graphs
 # =============================================================================
+# #the below commented cell is not needed as we will only use 1 algo
+# #for our project
+# #this can be uncommented anytime to run all 4 algos and get graphs
 # #SVM next
 # chooseModel(SVM())
 # callFuncs()
@@ -353,6 +360,7 @@ callFuncs()
 families= ['Algae', 'Amphibians', 'Bats', 'Birds', 'Butterfly',
            'Fish', 'Fruit Flies', 'Fungi', 'Plants', 'Sea Snail']
 each_family= combined.groupby('Family').count()
+print(combined.groupby('Family').count())
 plt.figure(figsize=(10,6))
 plt.title("No. of species in each Family")
 plt.xlabel('Family')
