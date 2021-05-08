@@ -11,6 +11,7 @@ from sklearn.neighbors import KNeighborsClassifier
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from sklearn.model_selection import GridSearchCV
+import time
 
 
 algae= pd.read_csv('../data/algae.csv')
@@ -160,7 +161,9 @@ def kNN():
     model= KNeighborsClassifier(n_neighbors=2, weights='distance')
     return model
 
-classifier = kNN() #just change the method name to call a different model
+start_time= time.time()
+
+classifier = RandomForest() #just change the method name to call a different model
 clf= classifier.fit(X_train, y_train)
 
 y_pred = classifier.predict(X_test)
@@ -177,6 +180,8 @@ print("The predicted family is: ", new_y1[0]) #"new_y1[0]" is the family name
 
 y1_pred= classifier.predict(X1_test)
 
+end_time= time.time()
+total_time= end_time - start_time
 #metrics for species classification
 def metrics(y_test, y_pred):
     print("Confusion matrix\n")
@@ -214,8 +219,11 @@ def getParams():
     print(gs_clf.best_score_)
     print(gs_clf.best_params_)
 
+
+
 metrics(y_test, y_pred)
 metricsFamily(y1_test, y1_pred)
+print("The total runtime of the model is: ", total_time)
 #getParams() #do not uncomment. Processing time is ridiculous
 
 
