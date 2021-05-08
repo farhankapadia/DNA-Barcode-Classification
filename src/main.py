@@ -163,7 +163,7 @@ def kNN():
 
 start_time= time.time()
 
-classifier = RandomForest() #just change the method name to call a different model
+classifier = kNN() #just change the method name to call a different model
 clf= classifier.fit(X_train, y_train)
 
 y_pred = classifier.predict(X_test)
