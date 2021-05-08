@@ -110,6 +110,7 @@ def getKmers(sequence, size=6):
 combined['Words'] = combined.apply(lambda x: getKmers(x['Sequence']), axis=1)
 combined = combined.drop('Sequence', axis=1)
 print(combined.head())
+print(combined.columns)
 
 combined_texts = list(combined['Words'])
     
@@ -154,7 +155,7 @@ def SVM():
 
 #Random Forest Classifier
 def RandomForest():
-    model= RandomForestClassifier()
+    model= RandomForestClassifier(n_estimators=100, criterion='gini')
     return model
 
 #KNN
@@ -267,81 +268,96 @@ def callFuncs():
 #Naive Baye's first
 chooseModel(MultiNB())
 callFuncs()
-#SVM next
-chooseModel(SVM())
-callFuncs()
-#Random Forest next
-chooseModel(RandomForest())
-callFuncs()
-#kNN last
-chooseModel(kNN())
-callFuncs()
 
-#barplot for comparing accuracies of all 4 algos for species
-algos= ["Naive Baye's", "SVM", "Random Forest", "kNN"]
-accuracySper= [i * 100 for i in accuracyS] 
+
+#the below commented cell is not needed as we will only use 1 algo
+#for our project
+#this can be uncommented anytime to run all 4 algos and get graphs
+# =============================================================================
+# #SVM next
+# chooseModel(SVM())
+# callFuncs()
+# #Random Forest next
+# chooseModel(RandomForest())
+# callFuncs()
+# #kNN last
+# chooseModel(kNN())
+# callFuncs()
+# 
+# #barplot for comparing accuracies of all 4 algos for species
+# algos= ["Naive Baye's", "SVM", "Random Forest", "kNN"]
+# accuracySper= [i * 100 for i in accuracyS] 
+# plt.figure(figsize=(10,6))
+# plt.title('Accuracy of the algorithms for species')
+# plt.xlabel('Algorithms')
+# plt.ylabel('Accuracy')
+# sns.barplot(x=algos, y=accuracySper)
+# 
+# #barplot for comparing accuracies of all 4 algos for family
+# accuracyFper= [i * 100 for i in accuracyF]
+# plt.figure(figsize=(10,6))
+# plt.title('Accuracy of the algorithms for family')
+# plt.xlabel('Algorithms')
+# plt.ylabel('Accuracy')
+# sns.barplot(x=algos, y=accuracyFper)
+# 
+# #barplot for comparing precision of all 4 algos for species
+# precisionSper= [i * 100 for i in precisionS]
+# plt.figure(figsize=(10,6))
+# plt.title('Precision of the algorithms for species')
+# plt.xlabel('Algorithms')
+# plt.ylabel('Precision')
+# sns.barplot(x=algos, y=precisionSper)
+# 
+# #barplot for comparing precision of all 4 algos for family
+# precisionFper= [i * 100 for i in precisionF]
+# plt.figure(figsize=(10,6))
+# plt.title('Precision of the algorithms for family')
+# plt.xlabel('Algorithms')
+# plt.ylabel('Precision')
+# sns.barplot(x=algos, y=precisionFper)
+# 
+# #barplot for comparing recall score of all 4 algos for species
+# recallSper= [i * 100 for i in recallS]
+# plt.figure(figsize=(10,6))
+# plt.title('Recall score of the algorithms for species')
+# plt.xlabel('Algorithms')
+# plt.ylabel('Recall score')
+# sns.barplot(x=algos, y=recallSper)
+# 
+# #barplot for comparing recall score of all 4 algos for family
+# recallFper= [i * 100 for i in recallF]
+# plt.figure(figsize=(10,6))
+# plt.title('Recall score of the algorithms for family')
+# plt.xlabel('Algorithms')
+# plt.ylabel('Recall score')
+# sns.barplot(x=algos, y=recallFper)
+# 
+# #barplot for comparing F1 score of all 4 algos for species
+# f1Sper= [i * 100 for i in f1S]
+# plt.figure(figsize=(10,6))
+# plt.title('F1 score of the algorithms for species')
+# plt.xlabel('Algorithms')
+# plt.ylabel('F1 score')
+# sns.barplot(x=algos, y=f1Sper)
+# 
+# #barplot for comparing F1 score of all 4 algos for family
+# f1Fper= [i * 100 for i in f1F]
+# plt.figure(figsize=(10,6))
+# plt.title('F1 score of the algorithms for family')
+# plt.xlabel('Algorithms')
+# plt.ylabel('F1 score')
+# sns.barplot(x=algos, y=f1Fper)
+# =============================================================================
+
+families= ['Algae', 'Amphibians', 'Bats', 'Birds', 'Butterfly',
+           'Fish', 'Fruit Flies', 'Fungi', 'Plants', 'Sea Snail']
+each_family= combined.groupby('Family').count()
 plt.figure(figsize=(10,6))
-plt.title('Accuracy of the algorithms for species')
-plt.xlabel('Algorithms')
-plt.ylabel('Accuracy')
-sns.barplot(x=algos, y=accuracySper)
-
-#barplot for comparing accuracies of all 4 algos for family
-accuracyFper= [i * 100 for i in accuracyF]
-plt.figure(figsize=(10,6))
-plt.title('Accuracy of the algorithms for family')
-plt.xlabel('Algorithms')
-plt.ylabel('Accuracy')
-sns.barplot(x=algos, y=accuracyFper)
-
-#barplot for comparing precision of all 4 algos for species
-precisionSper= [i * 100 for i in precisionS]
-plt.figure(figsize=(10,6))
-plt.title('Precision of the algorithms for species')
-plt.xlabel('Algorithms')
-plt.ylabel('Precision')
-sns.barplot(x=algos, y=precisionSper)
-
-#barplot for comparing precision of all 4 algos for family
-precisionFper= [i * 100 for i in precisionF]
-plt.figure(figsize=(10,6))
-plt.title('Precision of the algorithms for family')
-plt.xlabel('Algorithms')
-plt.ylabel('Precision')
-sns.barplot(x=algos, y=precisionFper)
-
-#barplot for comparing recall score of all 4 algos for species
-recallSper= [i * 100 for i in recallS]
-plt.figure(figsize=(10,6))
-plt.title('Recall score of the algorithms for species')
-plt.xlabel('Algorithms')
-plt.ylabel('Recall score')
-sns.barplot(x=algos, y=recallSper)
-
-#barplot for comparing recall score of all 4 algos for family
-recallFper= [i * 100 for i in recallF]
-plt.figure(figsize=(10,6))
-plt.title('Recall score of the algorithms for family')
-plt.xlabel('Algorithms')
-plt.ylabel('Recall score')
-sns.barplot(x=algos, y=recallFper)
-
-#barplot for comparing F1 score of all 4 algos for species
-f1Sper= [i * 100 for i in f1S]
-plt.figure(figsize=(10,6))
-plt.title('F1 score of the algorithms for species')
-plt.xlabel('Algorithms')
-plt.ylabel('F1 score')
-sns.barplot(x=algos, y=f1Sper)
-
-#barplot for comparing F1 score of all 4 algos for family
-f1Fper= [i * 100 for i in f1F]
-plt.figure(figsize=(10,6))
-plt.title('F1 score of the algorithms for family')
-plt.xlabel('Algorithms')
-plt.ylabel('F1 score')
-sns.barplot(x=algos, y=f1Fper)
-
+plt.title("No. of species in each Family")
+plt.xlabel('Family')
+plt.ylabel('No. of species')
+sns.barplot(x=families, y=each_family['Species'])
 
 
 
