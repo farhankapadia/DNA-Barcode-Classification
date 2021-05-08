@@ -8,10 +8,11 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
-import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from sklearn.model_selection import GridSearchCV
 import time
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 algae= pd.read_csv('../data/algae.csv')
@@ -161,29 +162,34 @@ def kNN():
     model= KNeighborsClassifier(n_neighbors=2, weights='distance')
     return model
 
-start_time= time.time()
 
-classifier = kNN() #just change the method name to call a different model
-clf= classifier.fit(X_train, y_train)
-
-y_pred = classifier.predict(X_test)
-
-
-new_x= cv.transform([new_test_sequence])
-new_y= classifier.predict(new_x)
-print("The predicted species is: ", new_y[0]) #"new_y[0] is the variable that has the species name stored
-
-classifier.fit(X1_train, y1_train)
-new_x1= cv.transform([new_test_sequence])
-new_y1= classifier.predict(new_x1)
-print("The predicted family is: ", new_y1[0]) #"new_y1[0]" is the family name
-
-y1_pred= classifier.predict(X1_test)
-
-end_time= time.time()
-total_time= end_time - start_time
+def chooseModel(classifier):
+    global total_time, clf, y_pred, y1_pred
+    start_time= time.time()
+    
+    #classifier = kNN() #just change the method name to call a different model
+    clf= classifier.fit(X_train, y_train)
+    
+    y_pred = classifier.predict(X_test)
+    
+    
+    new_x= cv.transform([new_test_sequence])
+    new_y= classifier.predict(new_x)
+    print("The predicted species is: ", new_y[0]) #"new_y[0] is the variable that has the species name stored
+    
+    classifier.fit(X1_train, y1_train)
+    new_x1= cv.transform([new_test_sequence])
+    new_y1= classifier.predict(new_x1)
+    print("The predicted family is: ", new_y1[0]) #"new_y1[0]" is the family name
+    
+    y1_pred= classifier.predict(X1_test)
+    
+    end_time= time.time()
+    total_time= end_time - start_time
+    
 #metrics for species classification
 def metrics(y_test, y_pred):
+    global accuracy_s, precision_s, recall_s, f1_s
     print("Confusion matrix\n")
     print(pd.crosstab(pd.Series(y_test, name='Actual'), pd.Series(y_pred, name='Predicted')))
     def get_metrics(y_test, y_predicted):
@@ -192,13 +198,14 @@ def metrics(y_test, y_pred):
         recall = recall_score(y_test, y_predicted, average='weighted', labels=np.unique(y_pred))
         f1 = f1_score(y_test, y_predicted, average='weighted', labels=np.unique(y_pred))
         return accuracy, precision, recall, f1
-    accuracy, precision, recall, f1 = get_metrics(y_test, y_pred)
+    accuracy_s, precision_s, recall_s, f1_s = get_metrics(y_test, y_pred)
     print("The metrics for species classification are: ")
-    print("accuracy = %.3f \nprecision = %.3f \nrecall = %.3f \nf1 = %.3f" % (accuracy, precision, recall, f1))
+    print("accuracy = %.3f \nprecision = %.3f \nrecall = %.3f \nf1 = %.3f" % (accuracy_s, precision_s, recall_s, f1_s))
     
 
 #metrics for family classification
 def metricsFamily(y_test, y_pred):
+    global accuracy_f, precision_f, recall_f, f1_f
     print("Confusion matrix\n")
     print(pd.crosstab(pd.Series(y_test, name='Actual'), pd.Series(y_pred, name='Predicted')))
     def get_metrics(y_test, y_predicted):
@@ -207,9 +214,9 @@ def metricsFamily(y_test, y_pred):
         recall = recall_score(y_test, y_predicted, average='weighted', labels=np.unique(y_pred))
         f1 = f1_score(y_test, y_predicted, average='weighted', labels=np.unique(y_pred))
         return accuracy, precision, recall, f1
-    accuracy, precision, recall, f1 = get_metrics(y_test, y_pred)
+    accuracy_f, precision_f, recall_f, f1_f = get_metrics(y_test, y_pred)
     print("The metrics for family classification are: ")
-    print("accuracy = %.3f \nprecision = %.3f \nrecall = %.3f \nf1 = %.3f" % (accuracy, precision, recall, f1))
+    print("accuracy = %.3f \nprecision = %.3f \nrecall = %.3f \nf1 = %.3f" % (accuracy_f, precision_f, recall_f, f1_f))
 
 
 def getParams():
@@ -219,12 +226,66 @@ def getParams():
     print(gs_clf.best_score_)
     print(gs_clf.best_params_)
 
+accuracyS= []
+precisionS= []
+recallS= []
+f1S= []
+
+accuracyF= []
+precisionF= []
+recallF= []
+f1F= []
+
+def printMetrics():
+    metrics(y_test, y_pred)
+    metricsFamily(y1_test, y1_pred)
+    print("The total runtime of the model is: ", total_time)
 
 
-metrics(y_test, y_pred)
-metricsFamily(y1_test, y1_pred)
-print("The total runtime of the model is: ", total_time)
+def appendSMetrics():
+    accuracyS.append(accuracy_s)
+    precisionS.append(precision_s)
+    recallS.append(recall_s)
+    f1S.append(f1_s)
+    
+def appendFMetrics():
+    accuracyF.append(accuracy_f)
+    precisionF.append(precision_f)
+    recallF.append(recall_f)
+    f1F.append(f1_f)
+   
+def callFuncs():
+    printMetrics()
+    appendSMetrics()
+    appendFMetrics()
+
+
 #getParams() #do not uncomment. Processing time is ridiculous
+
+#calling all models one by one
+
+#Naive Baye's first
+chooseModel(MultiNB())
+callFuncs()
+#SVM next
+chooseModel(SVM())
+callFuncs()
+#Random Forest next
+chooseModel(RandomForest())
+callFuncs()
+#kNN last
+chooseModel(kNN())
+callFuncs()
+
+#barplot for comparing accuracies of all 4 algos
+algos= ["Naive Baye's", "SVM", "Random Forest", "kNN"]
+accuracySper= [i * 100 for i in accuracyS] 
+
+plt.figure(figsize=(10,6))
+plt.title('Accuracy of the algorithms')
+plt.xlabel('Algorithms')
+plt.ylabel('Accuracy')
+sns.barplot(x=algos, y=accuracySper)
 
 
 
