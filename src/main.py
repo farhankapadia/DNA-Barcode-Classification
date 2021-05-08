@@ -277,15 +277,24 @@ callFuncs()
 chooseModel(kNN())
 callFuncs()
 
-#barplot for comparing accuracies of all 4 algos
+#barplot for comparing accuracies of all 4 algos for species
 algos= ["Naive Baye's", "SVM", "Random Forest", "kNN"]
 accuracySper= [i * 100 for i in accuracyS] 
 
 plt.figure(figsize=(10,6))
-plt.title('Accuracy of the algorithms')
+plt.title('Accuracy of the algorithms for species')
 plt.xlabel('Algorithms')
 plt.ylabel('Accuracy')
 sns.barplot(x=algos, y=accuracySper)
+
+#barplot for comparing accuracies of all 4 algos for family
+accuracyFper= [i * 100 for i in accuracyF]
+
+plt.figure(figsize=(10,6))
+plt.title('Accuracy of the algorithms for family')
+plt.xlabel('Algorithms')
+plt.ylabel('Accuracy')
+sns.barplot(x=algos, y=accuracyFper)
 
 
 
