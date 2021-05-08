@@ -7,6 +7,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn import svm
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.neighbors import KNeighborsClassifier
 import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 from sklearn.model_selection import GridSearchCV
@@ -154,8 +155,12 @@ def RandomForest():
     model= RandomForestClassifier()
     return model
 
+#KNN
+def kNN():
+    model= KNeighborsClassifier(n_neighbors=2, weights='distance')
+    return model
 
-classifier = MultiNB() #just change the method name to call a different model
+classifier = kNN() #just change the method name to call a different model
 clf= classifier.fit(X_train, y_train)
 
 y_pred = classifier.predict(X_test)
@@ -203,7 +208,7 @@ def metricsFamily(y_test, y_pred):
 
 
 def getParams():
-    parameters= {'alpha' : [1e-1, 1e-2, 1e-3, 1e-4]}
+    parameters= {'n_neighbors': [1, 2, 3]}
     gs_clf= GridSearchCV(clf, parameters)
     gs_clf= gs_clf.fit(X_train, y_train)
     print(gs_clf.best_score_)
@@ -211,7 +216,7 @@ def getParams():
 
 metrics(y_test, y_pred)
 metricsFamily(y1_test, y1_pred)
-getParams()
+#getParams() #do not uncomment. Processing time is ridiculous
 
 
 
