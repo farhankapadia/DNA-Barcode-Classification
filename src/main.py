@@ -377,3 +377,86 @@ plt.title("No. of species in each Family")
 plt.xlabel('Family')
 plt.ylabel('No. of species')
 sns.barplot(x=families, y=each_family.values)
+
+
+species_fam= combined.groupby('Family').Species.value_counts()
+print(species_fam)
+
+
+#plots are for species in each family
+# =============================================================================
+# #barplot for no. of each unique species for algae
+# plt.figure(figsize=(10,6))
+# plt.title("No. of each unique species in Algae")
+# plt.xlabel('No. of species')
+# plt.ylabel('Species')
+# sns.barplot(x=species_fam.loc['Algae'].values, y=species_fam.loc['Algae'].index, orient='h')
+# 
+# #barplot for no. of each unique species for amphibians
+# plt.figure(figsize=(15,6))
+# plt.title("No. of each unique species in Amphibians")
+# plt.xlabel('No. of species')
+# plt.ylabel('Speceis')
+# sns.barplot(x=species_fam.loc['Amphibians'].values, y=species_fam.loc['Amphibians'].index, orient='h')
+# 
+# #barplot for no. of each unique species for bats
+# plt.figure(figsize=(15,20))
+# plt.title("No. of each unique species in Bats")
+# plt.xlabel('No. of species')
+# plt.ylabel('Species')
+# sns.barplot(x=species_fam.loc['Bats'].values, y=species_fam.loc['Bats'].index, orient='h')
+# 
+# #barplot for no. of each unique species for Birds
+# plt.figure(figsize=(20,100))
+# plt.title("No. of each unique species in Birds")
+# plt.xlabel('No. of species')
+# plt.ylabel('Species')
+# sns.barplot(x=species_fam.loc['Birds'].values, y=species_fam.loc['Birds'].index, orient='h')
+# 
+# #barplot for no. of each unique species for bats
+# plt.figure(figsize=(15,40))
+# plt.title("No. of each unique species in Butterfly")
+# plt.xlabel('No. of species')
+# plt.ylabel('Species')
+# sns.barplot(x=species_fam.loc['Butterfly'].values, y=species_fam.loc['Butterfly'].index, orient='h')
+# 
+# #barplot for no. of each unique species for Fish
+# plt.figure(figsize=(15,30))
+# plt.title("No. of each unique species in Fish")
+# plt.xlabel('No. of species')
+# plt.ylabel('Species')
+# sns.barplot(x=species_fam.loc['Fish'].values, y=species_fam.loc['Fish'].index, orient='h')
+# 
+# #barplot for no. of each unique species for Fruit Flies
+# plt.figure(figsize=(15,6))
+# plt.title("No. of each unique species in Fruit Flies")
+# plt.xlabel('No. of species')
+# plt.ylabel('Speceis')
+# sns.barplot(x=species_fam.loc['Fruit Flies'].values, y=species_fam.loc['Fruit Flies'].index, orient='h')
+# 
+# #barplot for no. of each unique species for fungi
+# plt.figure(figsize=(10,6))
+# plt.title("No. of each unique species in Fungi")
+# plt.xlabel('No. of species')
+# plt.ylabel('Speceis')
+# sns.barplot(x=species_fam.loc['Fungi'].values, y=species_fam.loc['Fungi'].index, orient='h')
+# 
+# #barplot for no. of each unique species for plants
+# plt.figure(figsize=(15,30))
+# plt.title("No. of each unique species in Plants")
+# plt.xlabel('No. of species')
+# plt.ylabel('Speceis')
+# sns.barplot(x=species_fam.loc['Plants'].values, y=species_fam.loc['Plants'].index, orient='h')
+# 
+# #barplot for no. of each unique species for sea snail
+# plt.figure(figsize=(15,75))
+# plt.title("No. of each unique species in Sea Snail")
+# plt.xlabel('No. of species')
+# plt.ylabel('Speceis')
+# sns.barplot(x=species_fam.loc['Sea Snail'].values, y=species_fam.loc['Sea Snail'].index, orient='h')
+# 
+# =============================================================================
+
+
+
+
