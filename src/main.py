@@ -357,6 +357,8 @@ callFuncs()
 # sns.barplot(x=algos, y=f1Fper)
 # =============================================================================
 
+
+#total number of species in each family
 families= ['Algae', 'Amphibians', 'Bats', 'Birds', 'Butterfly',
            'Fish', 'Fruit Flies', 'Fungi', 'Plants', 'Sea Snail']
 each_family= combined.groupby('Family').count()
@@ -367,5 +369,11 @@ plt.xlabel('Family')
 plt.ylabel('No. of species')
 sns.barplot(x=families, y=each_family['Species'])
 
-
-
+#total number of unique species in each family
+each_family= combined.groupby('Family').Species.nunique()
+print(combined.groupby('Family').Species.nunique())
+plt.figure(figsize=(10,6))
+plt.title("No. of species in each Family")
+plt.xlabel('Family')
+plt.ylabel('No. of species')
+sns.barplot(x=families, y=each_family.values)
