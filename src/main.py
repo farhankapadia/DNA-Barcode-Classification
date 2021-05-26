@@ -1,5 +1,4 @@
 import pandas as pd
-import re
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
@@ -15,140 +14,146 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
-algae= pd.read_csv('../data/algae.csv')
-algae['Family']= 'Algae'
-print(algae.head())
-bats= pd.read_csv('../data/bats.csv')
-bats['Family']= 'Bats'
-print(bats.head())
-cypra= pd.read_csv('../data/CypraeidaeTrain.csv')
-cypra['Family']= 'Sea Snail'
-print(cypra.head())
-dros= pd.read_csv('../data/Drosophila_train.csv')
-dros['Family']= 'Fruit Flies'
-print(dros.head())
-fish= pd.read_csv('../data/fishes.csv')
-fish['Family']= 'Fish'
-fish= fish.reset_index()
-fish.drop('Properties', axis=1, inplace=True)
-fish.rename(columns={'index':'Properties'}, inplace=True)
-print(fish.columns)
-print(fish.head())
-fungi= pd.read_csv('../data/fungi.csv')
-fungi['Family']= 'Fungi'
-print(fungi.head())
-inga= pd.read_csv('../data/IngaTrain.csv')
-inga['Family']= 'Plants'
-print(inga.head())
-amph= pd.read_csv('../data/Amphibian_Train.csv')
-amph['Family']= 'Amphibians'
-print(amph.head())
-birds= pd.read_csv('../data/bird_Train.csv')
-birds['Family']= 'Birds'
-print(birds.head())
-butterfly= pd.read_csv('../data/butterfly_Train.csv')
-butterfly['Family']= 'Butterfly'
-print(butterfly.head())
-
-
-data1= [amph, birds, butterfly]
-data1= pd.concat(data1)
-data1['Properties']= data1['Properties'].str.split('unknownFamily').str[1]
-data1['Properties']= data1['Properties'].str.replace('_', ' ')
-data1['Properties']= data1['Properties'].apply(lambda x: x.strip())
-data1.rename(columns={' Sequence':'Sequence'}, inplace=True)
-data1['Sequence']= data1['Sequence'].apply(lambda x: x.replace('-', ''))
-data1= data1.reset_index()
-data1.drop('index', axis=1, inplace=True)
-
-
-data= [algae, bats, cypra, dros, fish, fungi, inga]
-data= pd.concat(data)
-data.rename(columns={' Sequence':'Sequence'}, inplace=True)
-data['Properties']= data['Properties'].str.split('|').str[1]
-print(data.loc[data['Family']=='Fish'])
-#removing whitespace
-data['Properties']= data['Properties'].apply(lambda x: x.strip())
-#removing garbage data(noise)
-
-data= data.loc[(data['Properties']!='partial cds| |') & 
-                       (data['Properties']!='complete cds| |')]
-
-#removing noise
-data['Sequence']= data['Sequence'].apply(lambda x: x.replace('-', ''))
-data= data.reset_index()
-data.drop('index', axis=1, inplace=True)
-# =============================================================================
-# print(data['Sequence'].value_counts())
-# print(data['Properties'].describe())
-# print(data['Sequence'].describe())
-# =============================================================================
-data['Properties']= data['Properties'].str.replace('_', ' ')
-combined= [data, data1]
-combined= pd.concat(combined)
-combined= combined.reset_index()
-combined.drop('index', axis=1, inplace=True)
-combined.rename(columns={'Properties':'Species'}, inplace=True)
-
-print(combined.head())
-print(combined.tail())
-print(combined.shape)
-print(combined.describe())
-print(combined.info())
-print(combined.columns)
-
-#classifying into species and family
-y= combined['Species']
-y1= combined['Family']
-
-# =============================================================================
-# #one hot encoding the sequence
-# def string_to_array(my_string):
-#     my_string = my_string.lower()
-#     my_string = re.sub('[^acgt]', 'z', my_string)
-#     my_array = np.array(list(my_string))
-#     return my_array
-# =============================================================================
-
-# function to convert sequence strings into k-mer words, default size = 6 (hexamer words)
-def getKmers(sequence, size=6):
-    return [sequence[x:x+size].lower() for x in range(len(sequence) - size + 1)]
-
-combined['Words'] = combined.apply(lambda x: getKmers(x['Sequence']), axis=1)
-combined = combined.drop('Sequence', axis=1)
-print(combined.head())
-print(combined.columns)
-
-combined_texts = list(combined['Words'])
+def getData():
+    algae= pd.read_csv('../data/algae.csv')
+    algae['Family']= 'Algae'
+    print(algae.head())
+    bats= pd.read_csv('../data/bats.csv')
+    bats['Family']= 'Bats'
+    print(bats.head())
+    cypra= pd.read_csv('../data/CypraeidaeTrain.csv')
+    cypra['Family']= 'Sea Snail'
+    print(cypra.head())
+    dros= pd.read_csv('../data/Drosophila_train.csv')
+    dros['Family']= 'Fruit Flies'
+    print(dros.head())
+    fish= pd.read_csv('../data/fishes.csv')
+    fish['Family']= 'Fish'
+    fish= fish.reset_index()
+    fish.drop('Properties', axis=1, inplace=True)
+    fish.rename(columns={'index':'Properties'}, inplace=True)
+    print(fish.columns)
+    print(fish.head())
+    fungi= pd.read_csv('../data/fungi.csv')
+    fungi['Family']= 'Fungi'
+    print(fungi.head())
+    inga= pd.read_csv('../data/IngaTrain.csv')
+    inga['Family']= 'Plants'
+    print(inga.head())
+    amph= pd.read_csv('../data/Amphibian_Train.csv')
+    amph['Family']= 'Amphibians'
+    print(amph.head())
+    birds= pd.read_csv('../data/bird_Train.csv')
+    birds['Family']= 'Birds'
+    print(birds.head())
+    butterfly= pd.read_csv('../data/butterfly_Train.csv')
+    butterfly['Family']= 'Butterfly'
+    print(butterfly.head())
     
-test_sequence= input("Enter a DNA sequence to be classified: ")
-test_sequence= test_sequence.replace('-', '')
-test_sequence= getKmers(test_sequence)
-new_test_sequence= ' '.join(test_sequence)
-#combined_texts.append(test_sequence)
-for item in range(len(combined_texts)):
-    combined_texts[item] = ' '.join(combined_texts[item])
     
-#label encoding the species name
-label_y= y.copy()
-label_encoder= LabelEncoder()
-label_y= label_encoder.fit_transform(y)
-
-#Creating the Bag of Words model using CountVectorizer()
-#This is equivalent to k-mer counting
-cv = CountVectorizer(ngram_range=(4,4))
-X = cv.fit_transform(combined_texts)
-
-#Splitting the dataset into the training set and test set
-X_train, X_test, y_train, y_test = train_test_split(X, 
-                                                    y, 
-                                                    test_size = 0.2, 
-                                                    random_state=42)
-
-X1_train, X1_test, y1_train, y1_test = train_test_split(X, 
-                                                    y1, 
-                                                    test_size = 0.2, 
-                                                    random_state=42)
+    data1= [amph, birds, butterfly]
+    data1= pd.concat(data1)
+    data1['Properties']= data1['Properties'].str.split('unknownFamily').str[1]
+    data1['Properties']= data1['Properties'].str.replace('_', ' ')
+    data1['Properties']= data1['Properties'].apply(lambda x: x.strip())
+    data1.rename(columns={' Sequence':'Sequence'}, inplace=True)
+    data1['Sequence']= data1['Sequence'].apply(lambda x: x.replace('-', ''))
+    data1= data1.reset_index()
+    data1.drop('index', axis=1, inplace=True)
+    
+    
+    data= [algae, bats, cypra, dros, fish, fungi, inga]
+    data= pd.concat(data)
+    data.rename(columns={' Sequence':'Sequence'}, inplace=True)
+    data['Properties']= data['Properties'].str.split('|').str[1]
+    print(data.loc[data['Family']=='Fish'])
+    #removing whitespace
+    data['Properties']= data['Properties'].apply(lambda x: x.strip())
+    #removing garbage data(noise)
+    
+    data= data.loc[(data['Properties']!='partial cds| |') & 
+                           (data['Properties']!='complete cds| |')]
+    
+    #removing noise
+    data['Sequence']= data['Sequence'].apply(lambda x: x.replace('-', ''))
+    data= data.reset_index()
+    data.drop('index', axis=1, inplace=True)
+    # =============================================================================
+    # print(data['Sequence'].value_counts())
+    # print(data['Properties'].describe())
+    # print(data['Sequence'].describe())
+    # =============================================================================
+    data['Properties']= data['Properties'].str.replace('_', ' ')
+    global combined
+    combined= [data, data1]
+    combined= pd.concat(combined)
+    combined= combined.reset_index()
+    combined.drop('index', axis=1, inplace=True)
+    combined.rename(columns={'Properties':'Species'}, inplace=True)
+    
+    print(combined.head())
+    print(combined.tail())
+    print(combined.shape)
+    print(combined.describe())
+    print(combined.info())
+    print(combined.columns)
+    
+    #classifying into species and family
+    y= combined['Species']
+    y1= combined['Family']
+    
+    # =============================================================================
+    # #one hot encoding the sequence
+    # def string_to_array(my_string):
+    #     my_string = my_string.lower()
+    #     my_string = re.sub('[^acgt]', 'z', my_string)
+    #     my_array = np.array(list(my_string))
+    #     return my_array
+    # =============================================================================
+    
+    # function to convert sequence strings into k-mer words, default size = 6 (hexamer words)
+    def getKmers(sequence, size=6):
+        return [sequence[x:x+size].lower() for x in range(len(sequence) - size + 1)]
+    
+    combined['Words'] = combined.apply(lambda x: getKmers(x['Sequence']), axis=1)
+    combined = combined.drop('Sequence', axis=1)
+    print(combined.head())
+    print(combined.columns)
+    
+    combined_texts = list(combined['Words'])
+        
+    test_sequence= input("Enter a DNA sequence to be classified: ") #comment this out when making GUI
+    #add this instead: test_sequence = inputVariableFromTextField 
+    global new_test_sequence
+    test_sequence= test_sequence.replace('-', '')
+    test_sequence= getKmers(test_sequence)
+    new_test_sequence= ' '.join(test_sequence)
+    #combined_texts.append(test_sequence)
+    for item in range(len(combined_texts)):
+        combined_texts[item] = ' '.join(combined_texts[item])
+        
+    #label encoding the species name
+    label_y= y.copy()
+    label_encoder= LabelEncoder()
+    label_y= label_encoder.fit_transform(y)
+    
+    #Creating the Bag of Words model using CountVectorizer()
+    #This is equivalent to k-mer counting
+    global cv
+    cv = CountVectorizer(ngram_range=(4,4))
+    X = cv.fit_transform(combined_texts)
+    
+    #Splitting the dataset into the training set and test set
+    global X_train, X_test, y_train, y_test, X1_train, X1_test, y1_train, y1_test
+    X_train, X_test, y_train, y_test = train_test_split(X, 
+                                                        y, 
+                                                        test_size = 0.2, 
+                                                        random_state=42)
+    
+    X1_train, X1_test, y1_train, y1_test = train_test_split(X, 
+                                                        y1, 
+                                                        test_size = 0.2, 
+                                                        random_state=42)
 
 #Multinomial Naive Bayes Classifier
 def MultiNB():
@@ -272,10 +277,27 @@ def callFuncs():
 #calling all models one by one
 
 #Naive Baye's first
-chooseModel(MultiNB()) #just change function call to change the model
-callFuncs()
+#chooseModel(MultiNB()) #just change function call to change the model
 
+def runModel():
+    #make sure the drop down list box has names EXACTLY as shown below
+    #Meaning, they should be "Naive Bayes", "SVM", "Random Forest", "kNN"
+    funcName= input('Enter the model to be called: ') #comment this out when making GUI and convert it to a drop down with same variable name
+    #add this instead: funcName = inputVariableFromDropDownListBox
+    if funcName=="Naive Bayes":
+        call= "chooseModel(MultiNB())"
+    elif funcName=="SVM":
+        call= "chooseModel(SVM())"
+    elif funcName=="Random Forest":
+        call= "chooseModel(RandomForest())"
+    elif funcName=="kNN":
+        call= "chooseModel(kNN())"
+    eval(call)
+    callFuncs()
 
+#import these two functions in the new file
+getData() 
+runModel()
 # =============================================================================
 # #the below commented cell is not needed as we will only use 1 algo
 # #for our project
