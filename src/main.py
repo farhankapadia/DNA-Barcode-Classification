@@ -175,7 +175,6 @@ def chooseModel(classifier):
     global total_time, clf, y_pred, y1_pred
     start_time= time.time()
     
-    #classifier = kNN() #just change the method name to call a different model
     clf= classifier.fit(X_train, y_train)
     
     y_pred = classifier.predict(X_test)
@@ -273,7 +272,7 @@ def callFuncs():
 #calling all models one by one
 
 #Naive Baye's first
-chooseModel(MultiNB())
+chooseModel(MultiNB()) #just change function call to change the model
 callFuncs()
 
 
