@@ -12,7 +12,7 @@ from sklearn.model_selection import GridSearchCV
 import time
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+from gui import *
 
 def getData():
     algae= pd.read_csv('../data/algae.csv')
@@ -122,8 +122,8 @@ def getData():
     
     combined_texts = list(combined['Words'])
         
-    test_sequence= input("Enter a DNA sequence to be classified: ") #comment this out when making GUI
-    #add this instead: test_sequence = inputVariableFromTextField 
+    # test_sequence= input("Enter a DNA sequence to be classified: ") #comment this out when making GUI
+    test_sequence = dnainp
     global new_test_sequence
     test_sequence= test_sequence.replace('-', '')
     test_sequence= getKmers(test_sequence)
@@ -194,6 +194,8 @@ def chooseModel(classifier):
     new_y1= classifier.predict(new_x1)
     print("The predicted family is: ", new_y1[0]) #"new_y1[0]" is the family name
     
+    sendop(new_y[0],new_y1[0])
+
     y1_pred= classifier.predict(X1_test)
     
     end_time= time.time()
@@ -282,8 +284,8 @@ def callFuncs():
 def runModel():
     #make sure the drop down list box has names EXACTLY as shown below
     #Meaning, they should be "Naive Bayes", "SVM", "Random Forest", "kNN"
-    funcName= input('Enter the model to be called: ') #comment this out when making GUI and convert it to a drop down with same variable name
-    #add this instead: funcName = inputVariableFromDropDownListBox
+    # funcName= input('Enter the model to be called: ') #comment this out when making GUI and convert it to a drop down with same variable name
+    funcName = mlmodel
     if funcName=="Naive Bayes":
         call= "chooseModel(MultiNB())"
     elif funcName=="SVM":
@@ -477,6 +479,7 @@ print(species_fam)
 # sns.barplot(x=species_fam.loc['Sea Snail'].values, y=species_fam.loc['Sea Snail'].index, orient='h')
 # 
 # =============================================================================
+outputs()
 
 
 
