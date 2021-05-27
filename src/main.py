@@ -14,42 +14,53 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from gui import *
 from barcode import *
+import os
 
 def getData():
-    algae= pd.read_csv('../data/algae.csv')
+    target_patha = os.path.join(os.path.dirname(__file__), '..\data/algae.csv')
+    algae= pd.read_csv(target_patha)
     algae['Family']= 'Algae'
-    print(algae.head())
-    bats= pd.read_csv('../data/bats.csv')
+    # print(algae.head())
+    target_pathb = os.path.join(os.path.dirname(__file__), '..\data/bats.csv')
+    bats= pd.read_csv(target_pathb)
     bats['Family']= 'Bats'
-    print(bats.head())
-    cypra= pd.read_csv('../data/CypraeidaeTrain.csv')
+    # print(bats.head())
+    target_pathc = os.path.join(os.path.dirname(__file__), '..\data/CypraeidaeTrain.csv')
+    cypra= pd.read_csv(target_pathc)
     cypra['Family']= 'Sea Snail'
-    print(cypra.head())
-    dros= pd.read_csv('../data/Drosophila_train.csv')
+    # print(cypra.head())
+    target_pathd = os.path.join(os.path.dirname(__file__), '..\data/Drosophila_train.csv')
+    dros= pd.read_csv(target_pathd)
     dros['Family']= 'Fruit Flies'
-    print(dros.head())
-    fish= pd.read_csv('../data/fishes.csv')
+    # print(dros.head())
+    target_pathf = os.path.join(os.path.dirname(__file__), '..\data/fishes.csv')
+    fish= pd.read_csv(target_pathf)
     fish['Family']= 'Fish'
     fish= fish.reset_index()
     fish.drop('Properties', axis=1, inplace=True)
     fish.rename(columns={'index':'Properties'}, inplace=True)
-    print(fish.columns)
-    print(fish.head())
-    fungi= pd.read_csv('../data/fungi.csv')
+    # print(fish.columns)
+    # print(fish.head())
+    target_pathfg = os.path.join(os.path.dirname(__file__), '..\data/fungi.csv')
+    fungi= pd.read_csv(target_pathfg)
     fungi['Family']= 'Fungi'
-    print(fungi.head())
-    inga= pd.read_csv('../data/IngaTrain.csv')
+    # print(fungi.head())
+    target_pathi = os.path.join(os.path.dirname(__file__), '..\data/IngaTrain.csv')
+    inga= pd.read_csv(target_pathi)
     inga['Family']= 'Plants'
-    print(inga.head())
-    amph= pd.read_csv('../data/Amphibian_Train.csv')
+    # print(inga.head())
+    target_patham = os.path.join(os.path.dirname(__file__), '..\data/Amphibian_Train.csv')
+    amph= pd.read_csv(target_patham)
     amph['Family']= 'Amphibians'
-    print(amph.head())
-    birds= pd.read_csv('../data/bird_Train.csv')
+    # print(amph.head())
+    target_pathbd = os.path.join(os.path.dirname(__file__), '..\data/bird_Train.csv')
+    birds= pd.read_csv(target_pathbd)
     birds['Family']= 'Birds'
-    print(birds.head())
-    butterfly= pd.read_csv('../data/butterfly_Train.csv')
+    # print(birds.head())
+    target_pathbf = os.path.join(os.path.dirname(__file__), '..\data/butterfly_Train.csv')
+    butterfly= pd.read_csv(target_pathbf)
     butterfly['Family']= 'Butterfly'
-    print(butterfly.head())
+    # print(butterfly.head())
     
     
     data1= [amph, birds, butterfly]
@@ -92,12 +103,12 @@ def getData():
     combined.drop('index', axis=1, inplace=True)
     combined.rename(columns={'Properties':'Species'}, inplace=True)
     
-    print(combined.head())
-    print(combined.tail())
-    print(combined.shape)
-    print(combined.describe())
-    print(combined.info())
-    print(combined.columns)
+    # print(combined.head())
+    # print(combined.tail())
+    # print(combined.shape)
+    # print(combined.describe())
+    # print(combined.info())
+    # print(combined.columns)
     
     #classifying into species and family
     y= combined['Species']
@@ -118,8 +129,8 @@ def getData():
     
     combined['Words'] = combined.apply(lambda x: getKmers(x['Sequence']), axis=1)
     combined = combined.drop('Sequence', axis=1)
-    print(combined.head())
-    print(combined.columns)
+    # print(combined.head())
+    # print(combined.columns)
     
     combined_texts = list(combined['Words'])
         
