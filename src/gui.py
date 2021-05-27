@@ -72,7 +72,7 @@ def outputs():
 
     op = Tk()
     op.title("DNA Barcode Output")
-    op.geometry("700x450")
+    op.geometry("1000x450")
     #set window color
     op['bg']='bisque'
 
@@ -90,6 +90,20 @@ def outputs():
     Label(op,background="bisque", font=("calibri","15","bold"),width=10,text="Species").grid(row= 3, column=2)
     Label(op,background="bisque", font=("calibri","15","italic"),width=20,text=genus).grid(row= 3, column=3)
     Label(op,background="bisque", font=("calibri","15","bold"),width=10,text="Barcode").grid(row= 4, column=2,pady=10)
+    
+    target_path_4 = os.path.join(os.path.dirname(__file__), '..\src/barcode.png')
+     
+
+    if(fam == "Algae" or fam == "Plants"):
+        img1=ImageTk.PhotoImage(Image.open(target_path_4).resize((600, 40), Image.ANTIALIAS), master = op)  
+        # setting image with the help of label
+    
+    else:
+        img1=ImageTk.PhotoImage(Image.open(target_path_4), master = op)  
+
+
+    # setting image with the help of label
+    Label(op, image = img1).grid(row = 5, column = 2, columnspan=2, pady=10)
 
   
 

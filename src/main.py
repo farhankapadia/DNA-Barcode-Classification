@@ -13,6 +13,7 @@ import time
 import matplotlib.pyplot as plt
 import seaborn as sns
 from gui import *
+from barcode import *
 
 def getData():
     algae= pd.read_csv('../data/algae.csv')
@@ -126,6 +127,7 @@ def getData():
     test_sequence = dnainp
     global new_test_sequence
     test_sequence= test_sequence.replace('-', '')
+    barcodeimage(test_sequence)
     test_sequence= getKmers(test_sequence)
     new_test_sequence= ' '.join(test_sequence)
     #combined_texts.append(test_sequence)
