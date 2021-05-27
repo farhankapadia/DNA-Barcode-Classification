@@ -215,6 +215,7 @@ def metrics(y_test, y_pred):
     accuracy_s, precision_s, recall_s, f1_s = get_metrics(y_test, y_pred)
     print("The metrics for species classification are: ")
     print("accuracy = %.3f \nprecision = %.3f \nrecall = %.3f \nf1 = %.3f" % (accuracy_s, precision_s, recall_s, f1_s))
+    tableSp(accuracy_s, precision_s, recall_s, f1_s)
     
 
 #metrics for family classification
@@ -231,6 +232,7 @@ def metricsFamily(y_test, y_pred):
     accuracy_f, precision_f, recall_f, f1_f = get_metrics(y_test, y_pred)
     print("The metrics for family classification are: ")
     print("accuracy = %.3f \nprecision = %.3f \nrecall = %.3f \nf1 = %.3f" % (accuracy_f, precision_f, recall_f, f1_f))
+    tableF(accuracy_f, precision_f, recall_f, f1_f)
 
 
 def getParams():
@@ -480,6 +482,7 @@ print(species_fam)
 # 
 # =============================================================================
 outputs()
+
 
 
 
