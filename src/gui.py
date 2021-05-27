@@ -125,7 +125,7 @@ def inputs():
      dnainp = e1.get(1.0, "end-1c")
      e1.delete(1.0,END)
      mlmodel = variable.get()
-     print(dnainp,mlmodel)
+    #  print(dnainp,mlmodel)
      root.destroy()
 
 
