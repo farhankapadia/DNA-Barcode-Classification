@@ -78,7 +78,7 @@ def getData():
     data= pd.concat(data)
     data.rename(columns={' Sequence':'Sequence'}, inplace=True)
     data['Properties']= data['Properties'].str.split('|').str[1]
-    print(data.loc[data['Family']=='Fish'])
+    # print(data.loc[data['Family']=='Fish'])
     #removing whitespace
     data['Properties']= data['Properties'].apply(lambda x: x.strip())
     #removing garbage data(noise)
