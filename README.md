@@ -1,20 +1,60 @@
 # DNA-Barcode-Classification
  
+ *B.E. Final Year Research Project 2020-2021*
+ 
+ ## Description
 **Classification** of an **unknown** specimen to its respective **Taxonomy** rank by analyzing its **DNA Barcode**.  
   
 ### Input  
-DNA Barcode as a String
+1. DNA Barcode as a raw FASTA sequence (string).  
+
+2. Choice of **Supervised Machine Learning** Model to use for prediction:
+   * *Naïve Bayes*
+   * *Support vector machine*
+   * *Random forest*
+   * *k-nearest neighbors algorithm*
 
 ### Output  
-Efficacious classification analysis of the given specimen to its respective taxonomy rank with the help of Supervised Machine Learning algorithms.  
+1. Classification analysis of the given specimen to its respective taxonomy rank:
+   * *Dataset*
+   * *Family*
+   * *Species*
 
-## Screenshots
-|||
-|--|--|
-|![alt text](https://github.com/farhankapadia/DNA-Barcode-Classification/blob/master/screenshots/1.png)|![alt text](https://github.com/farhankapadia/DNA-Barcode-Classification/blob/master/screenshots/2.png)|
-|![alt text](https://github.com/farhankapadia/DNA-Barcode-Classification/blob/master/screenshots/4.png)|![alt text](https://github.com/farhankapadia/DNA-Barcode-Classification/blob/master/screenshots/3.png)|
+2. Image of the Dataset it belongs to.
 
-## Dataset Description
+3. DNA Barcode string converted to an image form where single character corresponds to a strip of colour code as:
+   *  A --> Green
+   *  C --> Blue
+   *  T --> Red
+   *  G --> Black
+
+4. Performance Metrics of the chosen ML model for Label Prediction (Species and Family).   
+
+## Technology
+* Python 
+   * **NumPy**
+   * **pandas**
+   * **scikit-learn**
+   * **Matplotlib**
+   * **Seaborn**
+   * **fasta2csv** : converting FASTA format to CSV
+   * **Tkinter** : GUI
+   * **Pillow**
+   * **os**
+   * **time**
+
+
+## Dataset
+### Collection
+The **Train** and **Test** Datasets in FASTA format can be found in the [data](https://github.com/farhankapadia/DNA-Barcode-Classification/tree/master/data) folder.  
+
+The data which we used was cleaned, merged and manipulated to match our needs. This was extracted from Empirical Datasets of research papers. Links for the Datasets: 
+* https://github.com/zhangab2008/BarcodingR/blob/master/Appendix_S2_empiricalDatasets.zip 
+*  http://dmb.iasi.cnr.it/supbarcodes.php 
+
+### Description 
+We are using datasets from 10 different organisms with multiple numbers of species within them. Table below gives the summary of the dataset.  
+
 |No.| Dataset| #seq.| seq.length| #species| Gene region(s)|
 |--|--|--|--|--|--|
 |1| Bats |826| 659| 82| COI|
@@ -29,40 +69,32 @@ Efficacious classification analysis of the given specimen to its respective taxo
 |10 |Algae| 26| 1,128| 5 |rbcL|   
   
 
-### Total number of Species per Family after cleaning
-|Family| Total number of Species| 
-|--|--|
-|Algae |25 |
-|Amphibians| 274 |
-|Bats |839 |
-|Birds |1396 |
-|Butterfly| 926| 
-|Fish |625 |
-|Fruit Flies| 498 |
-|Fungi |48 |
-|Plants |785| 
-|Sea Snail |1655|
+### Data after Cleaning
+Raw FASTA files were cleaned by removing garbage values and redundant characters. They were then converted to CSV format for training the models.  
 
-###  Unique labels of Species per Family after cleaning
-|Family| Unique Labels of Species| 
-|--|--|
-|Algae |5 |
-|Amphibians| 29 |
-|Bats |96 |
-|Birds |574 |
-|Butterfly| 174| 
-|Fish |82 |
-|Fruit Flies| 19 |
-|Fungi |8 |
-|Plants |61| 
-|Sea Snail |211|
+|Family| #sequences| #species |
+|--|--|--|
+|Algae |25 |5|
+|Amphibians| 274 | 29|
+|Bats |839 |96
+|Birds |1396 | 574|
+|Butterfly| 926| 174 |
+|Fish |625 | 82 |
+|Fruit Flies| 498 | 19 |
+|Fungi |48 | 8|
+|Plants |785| 61|
+|Sea Snail |1655| 211 |
 
-|||
+
+|#sequences|#species|
 |--|--|
 |![alt text](https://github.com/farhankapadia/DNA-Barcode-Classification/blob/master/images/totalSpeciesInEachFamily.png)|![alt text](https://github.com/farhankapadia/DNA-Barcode-Classification/blob/master/images/uniqueSpeciesInEachFamily.png)|
 
 ## Performance Metrics
-The 4 algorithms are tested over the 4 performance metrics to predict the ‘Species’ and ‘Family’. Total time taken for each algorithm to predict both the labels is considered as the runtime of that algorithm. Following Tables and graphs below indicate the results and further evaluation is comprehended on it’s basis. 
+The 4 algorithms : *Naïve Bayes*, *SVM*, *Random Forest* and *kNN* are tested over the 4 performance metrics : *Accuracy*, *Precison*, *Recall* and *F1-score* to predict the **Species** and **Family**.  
+ Total time taken for each algorithm to predict both the labels is considered as the *Runtime* of that algorithm.  
+  
+  Following Tables and graphs below indicate the results and further evaluation is comprehended on it’s basis. 
 
 ### Species Classification
 ||Naïve Bayes| SVM| Random Forest| kNN|
@@ -79,7 +111,7 @@ The 4 algorithms are tested over the 4 performance metrics to predict the ‘Spe
 |Recall|1.000|1.000|1.000|0.978|
 |F1|1.000|1.000|1.000|0.980|
 
-|||
+|Species Classification|Family Classification|
 |--|--|
 |![alt text](https://github.com/farhankapadia/DNA-Barcode-Classification/blob/master/images/accuracySpecies.png)|![alt text](https://github.com/farhankapadia/DNA-Barcode-Classification/blob/master/images/accuracyFamily.png)|
 
@@ -95,3 +127,27 @@ are:
 ||Naïve Bayes| SVM| Random Forest| kNN|
 |--|--|--|--|--|
 |Runtime (in seconds)| 9.288| 202.471| 86.966| 3.609|
+
+Thus, **Naïve Bayes** seems to be the winner amongst the 4 algorithms for it's nearly best *Perfromance metrics* along with second best *Runtime*.
+
+## Screenshots
+|||
+|--|--|
+|![alt text](https://github.com/farhankapadia/DNA-Barcode-Classification/blob/master/screenshots/1.png)|![alt text](https://github.com/farhankapadia/DNA-Barcode-Classification/blob/master/screenshots/2.png)|
+|![alt text](https://github.com/farhankapadia/DNA-Barcode-Classification/blob/master/screenshots/4.png)|![alt text](https://github.com/farhankapadia/DNA-Barcode-Classification/blob/master/screenshots/3.png)|
+
+## Setup
+1. Clone this repository or download zip.  
+2. Open this repository on terminal. Navigate to [src](https://github.com/farhankapadia/DNA-Barcode-Classification/tree/master/src) folder by typing ```cd src```.
+
+3. Type (if mentioned above **python modules** are not installed)  
+
+   ```
+   pip install pandas sklearn matplotlib seaborn
+   ``` 
+   
+4. To run the project,
+   ```
+    python main.py
+   ```
+5. All set.
